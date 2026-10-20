@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Panel de invitados · Revelación del bebé</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FBF6EF">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Great+Vibes&family=Quicksand:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body>
+  <main class="panel">
+    <section class="acceso" id="acceso" hidden>
+      <div class="tarjeta acceso-tarjeta">
+        <div class="acceso-ave" data-ave></div>
+        <h1 class="seccion-titulo">Panel de invitados</h1>
+        <p class="acceso-texto">Revelación del bebé de Estefa y Sebas</p>
+        <form class="formulario" id="formAcceso">
+          <label class="campo">
+            <span>Clave</span>
+            <input type="password" id="clave" autocomplete="current-password" required>
+          </label>
+          <label class="casilla"><input type="checkbox" id="recordar" checked><span>Recordar en este dispositivo</span></label>
+          <button class="boton boton-principal" type="submit">Entrar</button>
+          <p class="error" id="errorAcceso" role="alert"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="tablero" id="tablero" hidden>
+      <header class="cabecera">
+        <div>
+          <p class="antetitulo">Panel de invitados</p>
+          <h1 class="cabecera-titulo">Revelación del bebé</h1>
+        </div>
+        <div class="cabecera-acciones">
+          <button class="boton-icono" id="refrescar" type="button" aria-label="Actualizar" data-icono="refrescar"></button>
+          <button class="boton-icono" id="salir" type="button" aria-label="Salir" data-icono="salir"></button>
+        </div>
+      </header>
+
+      <div class="resumen" id="resumen"></div>
+
+      <section class="tarjeta bloque-apuestas" id="apuestas" aria-label="Apuestas"></section>
+
+      <section class="tarjeta" aria-labelledby="tituloAgregar">
+        <h2 class="bloque-titulo" id="tituloAgregar">Agregar familia</h2>
+        <form class="form-familia" id="formFamilia">
+          <label class="campo">
+            <span>Nombre como aparecerá en la invitación</span>
+            <input id="nombreFamilia" maxlength="80" placeholder="Ej. Familia Gómez Ruiz" autocomplete="off" required>
+          </label>
+          <label class="campo campo-cupo">
+            <span>Lugares</span>
+            <input id="cupoFamilia" type="number" min="1" max="30" value="6" inputmode="numeric" required>
+          </label>
+          <button class="boton boton-principal" type="submit"><span data-icono="mas"></span>Agregar</button>
+        </form>
+      </section>
+
+      <section class="bloque" aria-labelledby="tituloFamilias">
+        <div class="bloque-cabecera">
+          <h2 class="bloque-titulo" id="tituloFamilias">Familias</h2>
+          <div class="filtros" id="filtros" role="tablist" aria-label="Filtrar familias">
+            <button type="button" role="tab" data-filtro="todas" aria-selected="true">Todas</button>
+            <button type="button" role="tab" data-filtro="asiste" aria-selected="false">Asisten</button>
+            <button type="button" role="tab" data-filtro="no" aria-selected="false">No asisten</button>
+            <button type="button" role="tab" data-filtro="pendiente" aria-selected="false">Pendientes</button>
+          </div>
+        </div>
+        <ul class="familias" id="familias"></ul>
+      </section>
+
+      <section class="tarjeta" id="mensajes" aria-labelledby="tituloMensajes"></section>
+
+      <footer class="pie-panel">
+        <button class="boton" id="descargar" type="button"><span data-icono="descargar"></span>Descargar Excel</button>
+        <p class="actualizado" id="actualizado"></p>
+      </footer>
+    </section>
+  </main>
+  <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+</body>
+</html>
