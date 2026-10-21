@@ -2,6 +2,7 @@
 // En este computador, sin Redis configurado, usa un archivo en .data/ para poder probar.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { ConfiguracionFaltante } from './util.js';
 
 const CLAVE = 'revelacion:familias';
 const ARCHIVO = join(process.cwd(), '.data', 'familias.json');
@@ -11,7 +12,7 @@ function conexion() {
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
   if (url && token) return { url, token };
   if (process.env.VERCEL) {
-    throw new Error('Falta conectar la base de datos (Upstash for Redis) al proyecto en Vercel.');
+    throw new ConfiguracionFaltante('Falta conectar la base de datos (Upstash for Redis) al proyecto en Vercel.');
   }
   return null;
 }

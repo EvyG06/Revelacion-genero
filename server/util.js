@@ -8,6 +8,24 @@ export function error(mensaje, estado = 400) {
   return json({ error: mensaje }, estado);
 }
 
+// Falta algo por configurar en Vercel: su mensaje sí se le muestra a quien abre la página.
+export class ConfiguracionFaltante extends Error {}
+
+// Envuelve un manejador para que cualquier falla responda JSON en vez de un error 500 sin explicación.
+export function manejar(manejador) {
+  return async (peticion) => {
+    try {
+      return await manejador(peticion);
+    } catch (falla) {
+      console.error(falla);
+      const mensaje = falla instanceof ConfiguracionFaltante
+        ? falla.message
+        : 'Algo falló en el servidor. Inténtalo de nuevo en un momento.';
+      return error(mensaje, 503);
+    }
+  };
+}
+
 export async function leerJson(peticion) {
   try {
     const datos = await peticion.json();

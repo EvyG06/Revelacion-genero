@@ -1,16 +1,16 @@
 import { eliminarFamilia, guardarFamilia, listarFamilias, obtenerFamilia } from '../server/store.js';
-import { codigoValido, entero, error, esAdmin, json, leerJson, linea, nuevoCodigo } from '../server/util.js';
+import { codigoValido, entero, error, esAdmin, json, leerJson, linea, manejar, nuevoCodigo } from '../server/util.js';
 
 // Todas las familias, en el orden en que se agregaron.
-export async function GET(peticion) {
+export const GET = manejar(async (peticion) => {
   if (!esAdmin(peticion)) return noAutorizado();
   const familias = await listarFamilias();
   familias.sort((a, b) => a.creada.localeCompare(b.creada));
   return json({ familias });
-}
+});
 
 // Agrega una familia y le asigna el código de su link.
-export async function POST(peticion) {
+export const POST = manejar(async (peticion) => {
   if (!esAdmin(peticion)) return noAutorizado();
   const cuerpo = (await leerJson(peticion)) ?? {};
   const nombre = linea(cuerpo.nombre, 80);
@@ -23,10 +23,10 @@ export async function POST(peticion) {
   const familia = { codigo, nombre, cupo, creada: new Date().toISOString(), respuesta: null };
   await guardarFamilia(familia);
   return json({ familia }, 201);
-}
+});
 
 // Cambia el nombre o los lugares, o borra la respuesta para que la familia vuelva a responder.
-export async function PATCH(peticion) {
+export const PATCH = manejar(async (peticion) => {
   if (!esAdmin(peticion)) return noAutorizado();
   const cuerpo = (await leerJson(peticion)) ?? {};
   const familia = codigoValido(cuerpo.codigo) ? await obtenerFamilia(cuerpo.codigo) : null;
@@ -46,15 +46,15 @@ export async function PATCH(peticion) {
 
   await guardarFamilia(familia);
   return json({ familia });
-}
+});
 
-export async function DELETE(peticion) {
+export const DELETE = manejar(async (peticion) => {
   if (!esAdmin(peticion)) return noAutorizado();
   const codigo = new URL(peticion.url).searchParams.get('c');
   if (!codigoValido(codigo)) return error('No encontramos esa familia.', 404);
   await eliminarFamilia(codigo);
   return json({ ok: true });
-}
+});
 
 function noAutorizado() {
   if (!process.env.ADMIN_PASSWORD) return error('Falta configurar ADMIN_PASSWORD en Vercel.', 503);

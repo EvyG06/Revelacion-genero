@@ -1,18 +1,18 @@
 import { guardarFamilia, listarFamilias, obtenerFamilia } from '../server/store.js';
-import { codigoValido, contarApuestas, error, json, leerJson, linea, parrafo } from '../server/util.js';
+import { codigoValido, contarApuestas, error, json, leerJson, linea, manejar, parrafo } from '../server/util.js';
 
 const APUESTAS = new Set(['nina', 'nino']);
 
 // La invitación de una familia y, si ya respondió, cómo van las apuestas.
-export async function GET(peticion) {
+export const GET = manejar(async (peticion) => {
   const familia = await buscar(peticion);
   if (!familia) return error('Invitación no encontrada.', 404);
   const apuestas = familia.respuesta ? contarApuestas(await listarFamilias()) : null;
   return json({ familia: publica(familia), apuestas });
-}
+});
 
 // Guarda la respuesta de la familia (o la reemplaza si la cambian).
-export async function POST(peticion) {
+export const POST = manejar(async (peticion) => {
   const familia = await buscar(peticion);
   if (!familia) return error('Invitación no encontrada.', 404);
   const cuerpo = await leerJson(peticion);
@@ -40,7 +40,7 @@ export async function POST(peticion) {
   };
   await guardarFamilia(familia);
   return json({ familia: publica(familia), apuestas: contarApuestas(await listarFamilias()) });
-}
+});
 
 async function buscar(peticion) {
   const codigo = new URL(peticion.url).searchParams.get('c');
