@@ -64,6 +64,7 @@ export function iniciarApertura({ alAbrir, alTerminar }) {
   }
 
   // La cigüeña entra por la derecha, se detiene sobre el lugar del sobre y sale por arriba a la izquierda.
+  // Los puntos se calculan en coordenadas de la pantalla y se pasan a la posición propia del ave.
   function calcularRuta() {
     ave.style.transform = 'translate(0px, 0px)';
     const rAve = ave.getBoundingClientRect();
@@ -75,21 +76,22 @@ export function iniciarApertura({ alAbrir, alTerminar }) {
     const desfaseY = rCarga.top + rCarga.height / 2 - rAve.top;
     const parada = {
       x: rSobre.left + rSobre.width / 2 - desfaseX,
-      y: Math.max(alto * 0.04, rSobre.top - rSobre.height * 0.5 - desfaseY),
+      y: Math.max(alto * 0.04, rSobre.top - rSobre.height * 0.35 - desfaseY),
     };
+    const local = (puntos) => puntos.map(({ x, y }) => ({ x: x - rAve.left, y: y - rAve.top }));
     return {
-      entrada: [
+      entrada: local([
         { x: ancho + 30, y: parada.y - alto * 0.1 },
         { x: ancho * 0.8, y: parada.y + alto * 0.16 },
         { x: parada.x + ancho * 0.28, y: parada.y - alto * 0.08 },
         parada,
-      ],
-      salida: [
+      ]),
+      salida: local([
         parada,
         { x: parada.x - ancho * 0.18, y: parada.y + alto * 0.03 },
         { x: -rAve.width * 0.5, y: parada.y - alto * 0.22 },
         { x: -rAve.width - 40, y: -rAve.height - alto * 0.04 },
-      ],
+      ]),
     };
   }
 
@@ -97,6 +99,8 @@ export function iniciarApertura({ alAbrir, alTerminar }) {
     const rCarga = carga.getBoundingClientRect();
     const rSobre = sobre.getBoundingClientRect();
     carga.style.visibility = 'hidden';
+    // El texto de llegada le cede el lugar al "Para …" del sobre.
+    animar(intro, [{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease' });
     const dx = rCarga.left + rCarga.width / 2 - (rSobre.left + rSobre.width / 2);
     const dy = rCarga.top + rCarga.height / 2 - (rSobre.top + rSobre.height / 2);
     const escala = Math.max(0.08, rCarga.width / rSobre.width);

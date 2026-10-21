@@ -30,7 +30,8 @@
 
 /* ---------- Cabecera y resumen ---------- */
 .cabecera { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-.cabecera-titulo { margin: 0; font-family: var(--script); font-size: 2.6rem; font-weight: 400; line-height: 1.1; }
+.antetitulo { margin: 0; font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--tostado); }
+.cabecera-titulo { margin: 0; font-family: var(--script); font-size: clamp(2.2rem, 9vw, 2.8rem); font-weight: 400; line-height: 1.1; white-space: nowrap; }
 .cabecera-acciones { display: flex; gap: 8px; }
 
 .boton-icono {
@@ -60,7 +61,7 @@
 .dato strong { display: block; font-family: var(--serif); font-size: 2.4rem; font-weight: 600; line-height: 1; }
 .dato span { display: block; margin-top: 6px; font-size: .86rem; font-weight: 700; }
 .dato small { display: block; font-size: .8rem; color: var(--tinta-suave); }
-.dato-destacado { border-color: transparent; background: linear-gradient(135deg, var(--rosa), var(--cielo)); }
+.dato-destacado { border-color: var(--arena); background: var(--crema); }
 
 .bloque-apuestas .marcador { margin: 0; background: transparent; padding: 0; }
 .bloque-titulo { margin: 0 0 12px; font-family: var(--serif); font-size: 1.55rem; font-weight: 600; line-height: 1.2; }

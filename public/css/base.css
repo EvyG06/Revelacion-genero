@@ -1,26 +1,27 @@
 /* Base compartida por la invitación y el panel: colores, letras y componentes. */
 :root {
   color-scheme: light;
-  --crema: #FBF6EF;
-  --papel: #FFFDF9;
+  --papel: #FFFEFC;
+  --crema: #FBF6EE;
   --beige: #F3EADD;
-  --arena: #E4D5C1;
-  --tostado: #B99B76;
-  --tinta: #574334;
-  --tinta-suave: #85705D;
-  --rosa: #F5D3CE;
-  --rosa-medio: #E9B1AA;
-  --rosa-texto: #B25F58;
-  --cielo: #D2E4EF;
-  --cielo-medio: #A6C6DC;
-  --cielo-texto: #4A7898;
-  --oro: #C9A66B;
-  --sombra-suave: 0 1px 2px rgba(110, 80, 50, .06), 0 14px 34px -16px rgba(110, 80, 50, .3);
-  --radio: 24px;
-  --script: 'Great Vibes', 'Snell Roundhand', 'Apple Chancery', cursive;
-  --serif: 'Cormorant Garamond', Cormorant, Georgia, 'Times New Roman', serif;
-  --sans: Quicksand, 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
-  --textura: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .22 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  --arena: #E6D9C6;
+  --tostado: #B89B7B;
+  --cafe: #8C7360;
+  --cafe-oscuro: #765F4E;
+  --tinta: #5E4A3B;
+  --tinta-suave: #7F6A59;
+  --rosa: #EBB7B5;
+  --rosa-suave: #F8E5E3;
+  --rosa-texto: #B4666A;
+  --cielo: #A8CBE6;
+  --cielo-suave: #E3EEF7;
+  --cielo-texto: #4C7AA0;
+  --oro: #C7A45C;
+  --script: Sacramento, 'Snell Roundhand', cursive;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: Nunito, 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+  /* Grano de papel muy suave para que todo parezca impreso. */
+  --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .27 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -35,12 +36,7 @@ body {
   font-weight: 500;
   line-height: 1.55;
   color: var(--tinta);
-  background-color: var(--crema);
-  background-image:
-    radial-gradient(70vmax 55vmax at 0% 0%, rgba(245, 211, 206, .5), transparent 60%),
-    radial-gradient(70vmax 55vmax at 100% 100%, rgba(210, 228, 239, .55), transparent 60%),
-    var(--textura);
-  background-attachment: fixed;
+  background: var(--papel) var(--grano);
   font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
 }
@@ -48,7 +44,7 @@ body {
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
-img, svg { max-width: 100%; }
+svg { max-width: 100%; }
 [hidden] { display: none !important; }
 
 .sr {
@@ -60,26 +56,16 @@ img, svg { max-width: 100%; }
   white-space: nowrap;
 }
 
-:focus-visible { outline: 3px solid var(--cielo-medio); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--cielo-texto); outline-offset: 3px; }
 
-.icono { width: 1.25em; height: 1.25em; flex: none; }
-
-/* ---------- Textos ---------- */
-.antetitulo {
-  margin: 0;
-  font-size: .74rem;
-  font-weight: 700;
-  letter-spacing: .24em;
-  text-transform: uppercase;
-  color: var(--tostado);
-}
+.icono { width: 1.2em; height: 1.2em; flex: none; }
 
 .seccion-titulo {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
   font-family: var(--script);
-  font-size: 2.4rem;
+  font-size: clamp(2.5rem, 11vw, 3.2rem);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.05;
   text-align: center;
   color: var(--tinta);
 }
@@ -91,49 +77,45 @@ img, svg { max-width: 100%; }
   justify-content: center;
   gap: 8px;
   min-height: 48px;
-  padding: 12px 20px;
-  border: 1.5px solid var(--arena);
+  padding: 12px 22px;
+  border: 1px solid var(--tostado);
   border-radius: 999px;
-  background: var(--papel);
+  background: transparent;
   color: var(--tinta);
-  font-size: .98rem;
-  font-weight: 600;
+  font-family: var(--sans);
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.1;
   text-decoration: none;
-  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+  transition: background-color .2s ease, transform .15s ease;
 }
 .boton:active { transform: scale(.97); }
-.boton .icono { width: 1.15em; height: 1.15em; }
+.boton .icono { width: 1.1em; height: 1.1em; }
 .boton [data-icono] { display: inline-flex; }
+.boton-principal { border-color: var(--cafe); background: var(--cafe); color: #FFFDF9; }
+.boton-principal:active { background: var(--cafe-oscuro); }
+.boton-suave { border-color: transparent; }
 
-.boton-principal {
-  border-color: transparent;
-  background: linear-gradient(100deg, var(--rosa) 0%, #EEDDE4 50%, var(--cielo) 100%);
-  box-shadow: 0 10px 22px -12px rgba(120, 90, 70, .55);
-}
-.boton-suave { background: transparent; }
-.boton-grande { min-height: 56px; padding: 14px 28px; font-size: 1.05rem; }
-
-/* ---------- Tarjetas ---------- */
 .tarjeta {
   position: relative;
-  margin-top: 22px;
-  padding: 28px 20px;
-  border: 1px solid rgba(191, 162, 127, .28);
-  border-radius: var(--radio);
-  background-color: var(--papel);
-  background-image: var(--textura);
-  box-shadow: var(--sombra-suave);
-}
-.tarjeta::before {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  border: 1px solid rgba(201, 166, 107, .3);
-  border-radius: calc(var(--radio) - 6px);
-  pointer-events: none;
+  margin-top: 20px;
+  padding: 26px 20px;
+  border: 1px solid var(--arena);
+  border-radius: 22px;
+  background: var(--papel);
 }
 
-/* ---------- Nombres con su apuesta ---------- */
+/* ---------- Acuarela, cigüeña y globos ---------- */
+.recorte, .ciguena, .globo { display: block; width: 100%; height: auto; }
+.ciguena, .globo { overflow: visible; }
+/* La acuarela tiene fondo blanco: "multiply" lo vuelve transparente sobre el papel. */
+[data-recorte], .equipo-oso { display: block; mix-blend-mode: multiply; }
+
+.capa-globos { position: fixed; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; }
+.globo-vuelo { position: absolute; bottom: -100px; display: block; }
+.globo-vuelo .globo { filter: url(#acuarela); }
+
+/* ---------- Nombres con el globo de su apuesta ---------- */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -147,85 +129,43 @@ img, svg { max-width: 100%; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px 6px 9px;
+  padding: 5px 13px 5px 9px;
   border-radius: 999px;
   font-size: .92rem;
-  font-weight: 600;
+  font-weight: 700;
 }
-.chip-nina { background: var(--rosa); color: var(--rosa-texto); }
-.chip-nino { background: var(--cielo); color: var(--cielo-texto); }
-.chip .icono-apuesta { width: 22px; height: 16px; }
-.icono-apuesta { width: 28px; height: 20px; flex: none; }
+.chip .globo { width: 12px; }
+.chip-nina { background: var(--rosa-suave); color: var(--rosa-texto); }
+.chip-nina .globo { color: var(--rosa); }
+.chip-nino { background: var(--cielo-suave); color: var(--cielo-texto); }
+.chip-nino .globo { color: var(--cielo); }
 
 /* ---------- Marcador de apuestas ---------- */
-.marcador {
-  margin: 6px 0 18px;
-  padding: 16px;
-  border-radius: 18px;
-  background: var(--crema);
-  text-align: center;
+.marcador { margin: 8px 0 18px; text-align: center; }
+.marcador-titulo { margin: 0 0 6px; font-family: var(--serif); font-size: 1.3rem; font-style: italic; color: var(--tinta-suave); }
+.marcador-equipos { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 8px; }
+.equipo { display: grid; justify-items: center; gap: 2px; margin: 0; }
+.equipo-oso {
+  width: 92px;
+  transform: scale(calc(.8 + var(--peso) * .4));
+  transform-origin: 50% 100%;
 }
-.marcador-titulo {
-  margin: 0 0 10px;
-  font-size: .74rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--tostado);
-}
+.equipo strong { display: block; font-family: var(--serif); font-size: 2rem; font-weight: 600; line-height: 1; }
+.equipo figcaption span { font-size: .84rem; font-weight: 700; }
+.equipo-nina { color: var(--rosa-texto); }
+.equipo-nino { color: var(--cielo-texto); }
 .marcador-barra {
   display: flex;
-  height: 16px;
+  height: 10px;
+  margin-top: 12px;
   overflow: hidden;
   border-radius: 999px;
   background: var(--arena);
 }
 .marcador-barra span { width: 50%; transition: width 1.4s cubic-bezier(.2, .8, .2, 1); }
-.marcador-nina { background: linear-gradient(90deg, var(--rosa-medio), var(--rosa)); }
-.marcador-nino { background: linear-gradient(90deg, var(--cielo), var(--cielo-medio)); }
-.marcador-equipos {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 10px;
-  font-weight: 700;
-}
-.equipo { display: inline-flex; align-items: center; gap: 5px; font-size: .86rem; white-space: nowrap; }
-.equipo strong { font-size: 1rem; }
-.equipo-nina { color: var(--rosa-texto); }
-.equipo-nino { color: var(--cielo-texto); }
-.equipo .icono-apuesta { width: 20px; height: 15px; }
+.marcador-nina { background: var(--rosa); }
+.marcador-nino { background: var(--cielo); }
 .marcador-total { margin: 8px 0 0; font-size: .85rem; color: var(--tinta-suave); }
-
-/* ---------- Cigüeña ---------- */
-.ciguena { display: block; width: 100%; height: auto; overflow: visible; }
-.ciguena .ciguena-cuerpo { animation: impulso .9s ease-in-out infinite; }
-.ciguena .ala { transform-origin: 0 0; animation: aleteo .9s ease-in-out infinite; }
-.ciguena .ala-lejana { animation-delay: -.06s; }
-.ciguena .columpio { transform-origin: 36px 84px; animation: columpio 2.4s ease-in-out infinite; }
-
-@keyframes aleteo {
-  0%, 100% { transform: rotate(-4deg) scaleY(1); }
-  50% { transform: rotate(8deg) scaleY(-.5); }
-}
-@keyframes impulso {
-  0%, 100% { transform: translateY(2px); }
-  50% { transform: translateY(-3px); }
-}
-@keyframes columpio {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
-}
-
-/* ---------- Confeti ---------- */
-.confeti {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

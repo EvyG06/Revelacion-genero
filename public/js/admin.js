@@ -1,7 +1,7 @@
 // Panel privado: agregar familias, enviar sus links y ver quién confirmó.
 import { EVENTO } from './evento.js';
-import { ICONO_NINA, ICONO_NINO, ciguena, icono, pintarIconos } from './ilustraciones.js';
-import { animarMarcador, esc, lugares, marcador } from './comun.js';
+import { ciguena, icono, pintarDefiniciones, pintarIconos } from './ilustraciones.js';
+import { animarMarcador, chip, esc, lugares, marcador } from './comun.js';
 import { descargarExcel } from './xlsx.js';
 
 const GUARDADA = 'revelacion-clave';
@@ -14,6 +14,7 @@ let editando = null;
 let temporizadorAviso = null;
 
 const lista = document.getElementById('familias');
+pintarDefiniciones();
 document.querySelector('[data-ave]').innerHTML = ciguena({ carga: 'bulto' });
 pintarIconos();
 
@@ -238,7 +239,7 @@ function vistaFamilia(familia) {
   const fecha = familia.respuesta
     ? ` · respondió el ${new Date(familia.respuesta.actualizada).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}`
     : '';
-  const chips = personas.map((p) => `<li class="chip chip-${p.apuesta}">${p.apuesta === 'nina' ? ICONO_NINA : ICONO_NINO}<span>${esc(p.nombre)}</span></li>`).join('');
+  const chips = personas.map(chip).join('');
   return `<li class="familia" data-codigo="${familia.codigo}">
     <div class="familia-cabecera">
       <div>

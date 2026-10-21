@@ -1,16 +1,19 @@
 import { EVENTO } from './evento.js';
-import { ciguena, pintarIconos } from './ilustraciones.js';
+import { ciguena, pintarDefiniciones, pintarIconos, pintarNubecitas, pintarRecortes } from './ilustraciones.js';
 import { iniciarApertura } from './apertura.js';
 import { montarRsvp } from './rsvp.js';
 import { crearMusica } from './musica.js';
-import { confeti } from './confeti.js';
+import { soltarGlobos } from './globos.js';
 
 const codigo = leerCodigo();
 const musica = crearMusica(document.getElementById('musica'));
 
+pintarDefiniciones();
 document.querySelectorAll('[data-ave]').forEach((nodo) => {
   nodo.innerHTML = ciguena({ carga: nodo.dataset.ave });
 });
+pintarRecortes();
+pintarNubecitas();
 pintarIconos();
 pintarEvento();
 iniciarCuentaRegresiva(document.getElementById('cuenta'));
@@ -60,11 +63,8 @@ function mostrarInvitacion() {
   principal.hidden = false;
   document.body.classList.remove('bloqueado');
   scrollTo(0, 0);
-  principal.animate(
-    [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }],
-    { duration: 900, easing: 'cubic-bezier(.2,.8,.2,1)' },
-  );
-  confeti();
+  principal.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, easing: 'ease' });
+  soltarGlobos({ cantidad: 16 });
   musica.mostrarBoton();
 }
 
@@ -81,6 +81,12 @@ function actualizarBotonConfirmar(familia) {
 function pintarEvento() {
   document.querySelectorAll('[data-evento]').forEach((nodo) => {
     nodo.textContent = EVENTO[nodo.dataset.evento];
+  });
+  // Bloque de fecha al estilo de las invitaciones impresas: mes, día de la semana, día y año.
+  const formato = (opciones) => new Intl.DateTimeFormat('es-CO', { timeZone: 'America/Bogota', ...opciones }).format(new Date(EVENTO.inicio));
+  const partes = { mes: { month: 'long' }, semana: { weekday: 'long' }, dia: { day: '2-digit' }, anio: { year: 'numeric' } };
+  document.querySelectorAll('[data-fecha]').forEach((nodo) => {
+    nodo.textContent = formato(partes[nodo.dataset.fecha]);
   });
   const enlaces = { mapa: EVENTO.mapa, waze: EVENTO.waze, calendario: enlaceCalendario() };
   document.querySelectorAll('[data-enlace]').forEach((enlace) => {
