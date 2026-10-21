@@ -54,9 +54,11 @@ export function iniciarApertura({ alAbrir, alTerminar }) {
       easing: 'ease-out',
     });
     const { entrada, salida } = calcularRuta();
-    await animar(ave, ruta(entrada), { duration: 2600, easing: 'cubic-bezier(.3,.6,.35,1)' }).finished;
+    // En pantallas anchas el recorrido es más largo: se le da más tiempo para que no parezca apurada.
+    const tiempo = Math.min(1.5, Math.max(1, innerWidth / 700));
+    await animar(ave, ruta(entrada), { duration: 2600 * tiempo, easing: 'cubic-bezier(.3,.6,.35,1)' }).finished;
     await soltarSobre();
-    animar(ave, ruta(salida), { duration: 1900, easing: 'cubic-bezier(.55,0,.75,.45)' });
+    animar(ave, ruta(salida), { duration: 1900 * tiempo, easing: 'cubic-bezier(.55,0,.75,.45)' });
     escena.querySelectorAll('.aparece').forEach((nodo) => nodo.classList.add('visible'));
     sobre.classList.add('listo');
     listo = true;
