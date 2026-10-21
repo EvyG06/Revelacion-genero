@@ -506,6 +506,22 @@ body.bloqueado { overflow: hidden; }
 .despedida-texto { position: relative; z-index: 1; margin: 0; font-family: var(--serif); font-size: 1.3rem; font-style: italic; color: var(--tinta-suave); }
 .pie-firma { position: relative; z-index: 1; margin: 0; font-family: var(--script); font-size: 3.2rem; line-height: 1.1; color: var(--tinta); }
 .despedida .e7 { top: 26px; left: 18%; width: 22px; animation-delay: -1.6s; }
+/* Créditos sobre las nubes del final; el halo claro los hace legibles encima de la acuarela. */
+.creditos {
+  position: absolute;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0 16px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: center;
+  color: var(--tinta);
+  text-shadow: 0 0 2px #FFFDF9, 0 0 8px #FFFDF9, 0 0 14px #FFFDF9;
+}
 
 .musica {
   position: fixed;
