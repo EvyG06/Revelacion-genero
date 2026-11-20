@@ -1,19 +1,14 @@
 import { EVENTO } from './evento.js';
-import { ciguena, pintarDefiniciones, pintarIconos, pintarNubecitas, pintarRecortes } from './ilustraciones.js';
+import { pintarIconos, pintarMariposas } from './ilustraciones.js';
 import { iniciarApertura } from './apertura.js';
 import { montarRsvp } from './rsvp.js';
 import { crearMusica } from './musica.js';
-import { soltarGlobos } from './globos.js';
+import { soltarMariposas } from './mariposas.js';
 
 const codigo = leerCodigo();
 const musica = crearMusica(document.getElementById('musica'));
 
-pintarDefiniciones();
-document.querySelectorAll('[data-ave]').forEach((nodo) => {
-  nodo.innerHTML = ciguena({ carga: nodo.dataset.ave });
-});
-pintarRecortes();
-pintarNubecitas();
+pintarMariposas();
 pintarIconos();
 pintarEvento();
 iniciarCuentaRegresiva(document.getElementById('cuenta'));
@@ -64,7 +59,7 @@ function mostrarInvitacion() {
   document.body.classList.remove('bloqueado');
   scrollTo(0, 0);
   principal.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, easing: 'ease' });
-  soltarGlobos({ cantidad: 16 });
+  soltarMariposas({ cantidad: 14 });
   musica.mostrarBoton();
 }
 
@@ -75,7 +70,7 @@ function mostrarSinInvitacion() {
 }
 
 function actualizarBotonConfirmar(familia) {
-  document.querySelector('#irConfirmar span').textContent = familia.respuesta ? 'Ver su respuesta' : 'Confirmar asistencia';
+  document.querySelector('#irConfirmar span:last-child').textContent = familia.respuesta ? 'Ver su respuesta' : 'Confirmar aquí';
 }
 
 function pintarEvento() {
@@ -102,7 +97,7 @@ function enlaceCalendario() {
     action: 'TEMPLATE',
     text: EVENTO.titulo,
     dates: `${formato(EVENTO.inicio)}/${formato(EVENTO.fin)}`,
-    details: `¿Niña o niño? Acompáñennos a descubrirlo.\nCómo llegar: ${EVENTO.mapa}`,
+    details: `Acompáñennos a celebrar la llegada de nuestra bebé.\nCómo llegar: ${EVENTO.mapa}`,
     location: EVENTO.lugar,
     ctz: 'America/Bogota',
   });

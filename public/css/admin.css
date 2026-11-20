@@ -7,7 +7,7 @@
 /* ---------- Acceso ---------- */
 .acceso { display: grid; place-items: center; min-height: 88vh; min-height: 88dvh; }
 .acceso-tarjeta { width: 100%; max-width: 420px; margin: 0; text-align: center; }
-.acceso-ave { width: 190px; margin: -6px auto 2px; }
+.acceso-mariposa { width: 170px; margin: 0 auto 10px; }
 .acceso-texto { margin: -6px 0 0; color: var(--tinta-suave); }
 .formulario { display: grid; gap: 14px; margin-top: 20px; text-align: left; }
 
@@ -18,20 +18,20 @@
   padding: 0 14px;
   border: 1.5px solid var(--arena);
   border-radius: 14px;
-  background: var(--papel);
+  background: var(--blanco);
   font-size: 1rem;
   font-weight: 500;
   color: var(--tinta);
 }
-.campo input:focus { outline: none; border-color: var(--tostado); box-shadow: 0 0 0 3px rgba(191, 162, 127, .25); }
+.campo input:focus { outline: none; border-color: var(--tostado); box-shadow: 0 0 0 3px rgba(196, 106, 146, .18); }
 .casilla { display: flex; align-items: center; gap: 10px; font-size: .92rem; }
-.casilla input { width: 20px; height: 20px; accent-color: var(--tostado); }
+.casilla input { width: 20px; height: 20px; accent-color: var(--rosa); }
 .error { min-height: 1.3em; margin: 0; font-weight: 600; text-align: center; color: var(--rosa-texto); }
 
 /* ---------- Cabecera y resumen ---------- */
 .cabecera { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-.antetitulo { margin: 0; font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--tostado); }
-.cabecera-titulo { margin: 0; font-family: var(--script); font-size: clamp(2.2rem, 9vw, 2.8rem); font-weight: 400; line-height: 1.1; white-space: nowrap; }
+.antetitulo { margin: 0; font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--malva); }
+.cabecera-titulo { margin: 0; font-family: var(--script); font-size: clamp(2.2rem, 9vw, 2.8rem); font-weight: 400; line-height: 1.1; white-space: nowrap; color: var(--rosa); }
 .cabecera-acciones { display: flex; gap: 8px; }
 
 .boton-icono {
@@ -42,7 +42,7 @@
   height: 44px;
   border: 1.5px solid var(--arena);
   border-radius: 50%;
-  background: var(--papel);
+  background: var(--blanco);
   color: var(--tinta);
   text-decoration: none;
 }
@@ -53,9 +53,9 @@
 @media (min-width: 640px) { .resumen { grid-template-columns: repeat(4, 1fr); } }
 .dato {
   padding: 16px;
-  border: 1px solid rgba(191, 162, 127, .28);
+  border: 1px solid rgba(196, 140, 165, .28);
   border-radius: 20px;
-  background: var(--papel);
+  background: var(--blanco);
   box-shadow: var(--sombra-suave);
 }
 .dato strong { display: block; font-family: var(--serif); font-size: 2.4rem; font-weight: 600; line-height: 1; }
@@ -63,7 +63,6 @@
 .dato small { display: block; font-size: .8rem; color: var(--tinta-suave); }
 .dato-destacado { border-color: var(--arena); background: var(--crema); }
 
-.bloque-apuestas .marcador { margin: 0; background: transparent; padding: 0; }
 .bloque-titulo { margin: 0 0 12px; font-family: var(--serif); font-size: 1.55rem; font-weight: 600; line-height: 1.2; }
 
 /* ---------- Agregar familia ---------- */
@@ -89,20 +88,20 @@
   white-space: nowrap;
   color: var(--tinta-suave);
 }
-.filtros button[aria-selected="true"] { background: var(--papel); color: var(--tinta); box-shadow: 0 2px 6px rgba(110, 80, 50, .12); }
+.filtros button[aria-selected="true"] { background: var(--blanco); color: var(--tinta); box-shadow: 0 2px 6px rgba(110, 60, 85, .12); }
 .filtros button span { margin-left: 4px; opacity: .7; }
 
 .familias { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .familia {
   padding: 16px;
-  border: 1px solid rgba(191, 162, 127, .28);
+  border: 1px solid rgba(196, 140, 165, .28);
   border-radius: 20px;
-  background: var(--papel);
+  background: var(--blanco);
   box-shadow: var(--sombra-suave);
 }
 .familia.nueva { animation: resaltar 1.8s ease; }
 @keyframes resaltar {
-  0%, 40% { box-shadow: 0 0 0 4px rgba(201, 166, 107, .45), var(--sombra-suave); }
+  0%, 40% { box-shadow: 0 0 0 4px rgba(196, 106, 146, .35), var(--sombra-suave); }
   100% { box-shadow: var(--sombra-suave); }
 }
 .familia-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
@@ -159,3 +158,8 @@
   transition: opacity .25s ease, transform .25s ease;
 }
 .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* Mensajes que dejaron cuando la invitación era para la revelación. */
+.mensajes-antes { margin-top: 22px; }
+.mensajes-antes-titulo { margin: 0 0 4px; font-family: var(--serif); font-size: 1.2rem; font-weight: 600; }
+.mensajes-antes-nota { margin: 0 0 12px; font-size: .86rem; color: var(--tinta-suave); }

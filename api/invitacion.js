@@ -1,24 +1,24 @@
-import { guardarFamilia, listarFamilias, obtenerFamilia } from '../server/store.js';
-import { codigoValido, contarApuestas, error, json, leerJson, linea, manejar, parrafo } from '../server/util.js';
+import { guardarFamilia, obtenerFamilia } from '../server/store.js';
+import { codigoValido, error, json, leerJson, linea, manejar, parrafo } from '../server/util.js';
 
-const APUESTAS = new Set(['nina', 'nino']);
+// La confirmación del baby shower se guarda en `confirmacion`. Lo que respondieron para la
+// revelación (que no se hizo) queda intacto en `respuesta`, y solo lo ve el panel.
 
-// La invitación de una familia y, si ya respondió, cómo van las apuestas.
+// La invitación de una familia y, si ya confirmó, su respuesta.
 export const GET = manejar(async (peticion) => {
   const familia = await buscar(peticion);
   if (!familia) return error('Invitación no encontrada.', 404);
-  const apuestas = familia.respuesta ? contarApuestas(await listarFamilias()) : null;
-  return json({ familia: publica(familia), apuestas });
+  return json({ familia: publica(familia) });
 });
 
-// Guarda la respuesta de la familia (o la reemplaza si la cambian).
+// Guarda la confirmación de la familia (o la reemplaza si la cambian).
 export const POST = manejar(async (peticion) => {
   const familia = await buscar(peticion);
   if (!familia) return error('Invitación no encontrada.', 404);
   const cuerpo = await leerJson(peticion);
   if (!cuerpo || typeof cuerpo.asiste !== 'boolean') return error('Cuéntennos si nos acompañarán.');
 
-  const personas = Array.isArray(cuerpo.personas) ? cuerpo.personas : [];
+  const personas = cuerpo.asiste && Array.isArray(cuerpo.personas) ? cuerpo.personas : [];
   if (personas.length > familia.cupo) {
     return error(`Tienen ${familia.cupo} ${familia.cupo === 1 ? 'lugar reservado' : 'lugares reservados'}.`);
   }
@@ -28,18 +28,17 @@ export const POST = manejar(async (peticion) => {
   for (const persona of personas) {
     const nombre = linea(persona?.nombre, 60);
     if (!nombre) return error('Escriban el nombre de cada persona.');
-    if (!APUESTAS.has(persona.apuesta)) return error(`Falta la apuesta de ${nombre}.`);
-    limpias.push({ nombre, apuesta: persona.apuesta });
+    limpias.push({ nombre });
   }
 
-  familia.respuesta = {
+  familia.confirmacion = {
     asiste: cuerpo.asiste,
     personas: limpias,
     mensaje: parrafo(cuerpo.mensaje, 500),
     actualizada: new Date().toISOString(),
   };
   await guardarFamilia(familia);
-  return json({ familia: publica(familia), apuestas: contarApuestas(await listarFamilias()) });
+  return json({ familia: publica(familia) });
 });
 
 async function buscar(peticion) {
@@ -47,6 +46,6 @@ async function buscar(peticion) {
   return codigoValido(codigo) ? obtenerFamilia(codigo) : null;
 }
 
-function publica({ nombre, cupo, respuesta }) {
-  return { nombre, cupo, respuesta };
+function publica({ nombre, cupo, confirmacion }) {
+  return { nombre, cupo, respuesta: confirmacion ?? null };
 }

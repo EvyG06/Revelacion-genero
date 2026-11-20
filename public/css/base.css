@@ -1,27 +1,32 @@
 /* Base compartida por la invitación y el panel: colores, letras y componentes. */
 :root {
   color-scheme: light;
-  --papel: #FFFEFC;
-  --crema: #FBF6EE;
-  --beige: #F3EADD;
-  --arena: #E6D9C6;
-  --tostado: #B89B7B;
-  --cafe: #8C7360;
-  --cafe-oscuro: #765F4E;
-  --tinta: #5E4A3B;
-  --tinta-suave: #7F6A59;
-  --rosa: #EBB7B5;
-  --rosa-suave: #F8E5E3;
-  --rosa-texto: #B4666A;
-  --cielo: #A8CBE6;
-  --cielo-suave: #E3EEF7;
-  --cielo-texto: #4C7AA0;
-  --oro: #C7A45C;
-  --script: Sacramento, 'Snell Roundhand', cursive;
+  --papel: #F7F4F5;
+  --blanco: #FFFDFD;
+  --crema: #FBF3F6;
+  --beige: #F3E8EE;
+  --arena: #E8D6E0;
+  --tostado: #CFAFC1;
+  --rubor: #F3CADA;
+  --rubor-borde: #E7A9C1;
+  --lila: #CDBDE0;
+  --lavanda: #98809A;
+  --rosa: #C46A92;
+  --rosa-claro: #B5708F;
+  --rosa-texto: #7E3A5B;
+  --malva: #8E5C7B;
+  --acento: #B4537C;
+  --acento-oscuro: #9A4569;
+  --tinta: #3E3039;
+  --tinta-media: #6E5566;
+  --tinta-suave: #806676;
+  --script: 'Great Vibes', 'Snell Roundhand', cursive;
   --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --versalitas: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
   --sans: Nunito, 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
   /* Grano de papel muy suave para que todo parezca impreso. */
-  --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .27 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .32 0 0 0 0 .40 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --sombra-suave: 0 10px 24px -18px rgba(110, 60, 85, .35);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -44,7 +49,7 @@ body {
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
-svg { max-width: 100%; }
+img, svg { max-width: 100%; }
 [hidden] { display: none !important; }
 
 .sr {
@@ -56,18 +61,19 @@ svg { max-width: 100%; }
   white-space: nowrap;
 }
 
-:focus-visible { outline: 2px solid var(--cielo-texto); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--malva); outline-offset: 3px; }
 
 .icono { width: 1.2em; height: 1.2em; flex: none; }
 
 .seccion-titulo {
   margin: 0 0 8px;
   font-family: var(--script);
-  font-size: clamp(2.5rem, 11vw, 3.2rem);
+  font-size: clamp(2.5rem, 11vw, 3rem);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.1;
   text-align: center;
-  color: var(--tinta);
+  text-wrap: balance;
+  color: var(--rosa);
 }
 
 /* ---------- Botones ---------- */
@@ -92,8 +98,8 @@ svg { max-width: 100%; }
 .boton:active { transform: scale(.97); }
 .boton .icono { width: 1.1em; height: 1.1em; }
 .boton [data-icono] { display: inline-flex; }
-.boton-principal { border-color: var(--cafe); background: var(--cafe); color: #FFFDF9; }
-.boton-principal:active { background: var(--cafe-oscuro); }
+.boton-principal { border-color: var(--acento); background: var(--acento); color: #FFFFFF; }
+.boton-principal:active { background: var(--acento-oscuro); }
 .boton-suave { border-color: transparent; }
 
 .tarjeta {
@@ -102,20 +108,62 @@ svg { max-width: 100%; }
   padding: 26px 20px;
   border: 1px solid var(--arena);
   border-radius: 22px;
-  background: var(--papel);
+  background: var(--blanco);
 }
 
-/* ---------- Acuarela, cigüeña y globos ---------- */
-.recorte, .ciguena, .globo { display: block; width: 100%; height: auto; }
-.ciguena, .globo { overflow: visible; }
-/* La acuarela tiene fondo blanco: "multiply" lo vuelve transparente sobre el papel. */
-[data-recorte], .equipo-oso { display: block; mix-blend-mode: multiply; }
+/* ---------- Mariposas ----------
+   La mariposa grande va partida en dos mitades que giran sobre el cuerpo: así aletea. */
+.mariposa { display: block; aspect-ratio: 366 / 272; perspective: 700px; }
+.mariposa img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+.mariposa:not(.mariposa-suelta) { position: absolute; }
+.mariposa-suelta { position: relative; }
+.mariposa .ala-izq { clip-path: inset(0 50% 0 0); }
+.mariposa .ala-der { clip-path: inset(0 0 0 50%); }
+/* Posada: descansa y de vez en cuando da dos aleteos. */
+.mariposa.posada .ala-izq { animation: posada-izq 4.6s ease-in-out infinite; }
+.mariposa.posada .ala-der { animation: posada-der 4.6s ease-in-out infinite; }
+/* En vuelo: aletea rápido. */
+.mariposa.volando .ala-izq { animation: rapido-izq .2s ease-in-out infinite alternate; }
+.mariposa.volando .ala-der { animation: rapido-der .2s ease-in-out infinite alternate; }
 
-.capa-globos { position: fixed; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; }
-.globo-vuelo { position: absolute; bottom: -100px; display: block; }
-.globo-vuelo .globo { filter: url(#acuarela); }
+@keyframes posada-izq {
+  0%, 50%, 100% { transform: rotateY(0deg); }
+  57% { transform: rotateY(56deg); }
+  64% { transform: rotateY(6deg); }
+  71% { transform: rotateY(52deg); }
+  80% { transform: rotateY(0deg); }
+}
+@keyframes posada-der {
+  0%, 50%, 100% { transform: rotateY(0deg); }
+  57% { transform: rotateY(-56deg); }
+  64% { transform: rotateY(-6deg); }
+  71% { transform: rotateY(-52deg); }
+  80% { transform: rotateY(0deg); }
+}
+@keyframes rapido-izq { from { transform: rotateY(4deg); } to { transform: rotateY(64deg); } }
+@keyframes rapido-der { from { transform: rotateY(-4deg); } to { transform: rotateY(-64deg); } }
+@keyframes planear {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
 
-/* ---------- Nombres con el globo de su apuesta ---------- */
+/* Mariposas pequeñas que celebran: suben por la pantalla. */
+.capa-mariposas { position: fixed; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; }
+.mariposa-vuelo { position: absolute; display: block; }
+.mariposa-vuelo img { display: block; width: 100%; height: auto; animation: aleteo .2s ease-in-out infinite alternate; }
+@keyframes aleteo { from { transform: scaleX(1); } to { transform: scaleX(.42); } }
+
+/* ---------- Nombres de quienes van ---------- */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -131,41 +179,13 @@ svg { max-width: 100%; }
   gap: 6px;
   padding: 5px 13px 5px 9px;
   border-radius: 999px;
+  background: var(--crema);
+  border: 1px solid var(--arena);
   font-size: .92rem;
   font-weight: 700;
+  color: var(--rosa-texto);
 }
-.chip .globo { width: 12px; }
-.chip-nina { background: var(--rosa-suave); color: var(--rosa-texto); }
-.chip-nina .globo { color: var(--rosa); }
-.chip-nino { background: var(--cielo-suave); color: var(--cielo-texto); }
-.chip-nino .globo { color: var(--cielo); }
-
-/* ---------- Marcador de apuestas ---------- */
-.marcador { margin: 8px 0 18px; text-align: center; }
-.marcador-titulo { margin: 0 0 6px; font-family: var(--serif); font-size: 1.3rem; font-style: italic; color: var(--tinta-suave); }
-.marcador-equipos { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 8px; }
-.equipo { display: grid; justify-items: center; gap: 2px; margin: 0; }
-.equipo-oso {
-  width: 92px;
-  transform: scale(calc(.8 + var(--peso) * .4));
-  transform-origin: 50% 100%;
-}
-.equipo strong { display: block; font-family: var(--serif); font-size: 2rem; font-weight: 600; line-height: 1; }
-.equipo figcaption span { font-size: .84rem; font-weight: 700; }
-.equipo-nina { color: var(--rosa-texto); }
-.equipo-nino { color: var(--cielo-texto); }
-.marcador-barra {
-  display: flex;
-  height: 10px;
-  margin-top: 12px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--arena);
-}
-.marcador-barra span { width: 50%; transition: width 1.4s cubic-bezier(.2, .8, .2, 1); }
-.marcador-nina { background: var(--rosa); }
-.marcador-nino { background: var(--cielo); }
-.marcador-total { margin: 8px 0 0; font-size: .85rem; color: var(--tinta-suave); }
+.chip img { display: block; width: 16px; height: auto; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

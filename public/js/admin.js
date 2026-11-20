@@ -1,7 +1,7 @@
 // Panel privado: agregar familias, enviar sus links y ver quién confirmó.
 import { EVENTO } from './evento.js';
-import { ciguena, icono, pintarDefiniciones, pintarIconos } from './ilustraciones.js';
-import { animarMarcador, chip, esc, lugares, marcador } from './comun.js';
+import { icono, pintarIconos, pintarMariposas } from './ilustraciones.js';
+import { chip, esc, lugares } from './comun.js';
 import { descargarExcel } from './xlsx.js';
 
 const GUARDADA = 'revelacion-clave';
@@ -14,8 +14,7 @@ let editando = null;
 let temporizadorAviso = null;
 
 const lista = document.getElementById('familias');
-pintarDefiniciones();
-document.querySelector('[data-ave]').innerHTML = ciguena({ carga: 'bulto' });
+pintarMariposas();
 pintarIconos();
 
 document.getElementById('formAcceso').addEventListener('submit', entrar);
@@ -120,9 +119,9 @@ async function accionFamilia(evento) {
       editando = null;
       pintarFamilias();
     } else if (accion === 'reiniciar') {
-      if (!confirm(`¿Borrar la respuesta de ${familia.nombre}? Podrán volver a responder con el mismo link.`)) return;
+      if (!confirm(`¿Borrar la confirmación de ${familia.nombre}? Podrán volver a responder con el mismo link.`)) return;
       reemplazar((await api('PATCH', '', { codigo, borrarRespuesta: true })).familia);
-      avisar('Respuesta borrada.');
+      avisar('Confirmación borrada.');
     } else if (accion === 'eliminar') {
       if (!confirm(`¿Eliminar a ${familia.nombre}? Su link dejará de funcionar.`)) return;
       await api('DELETE', `?c=${encodeURIComponent(codigo)}`);
@@ -187,27 +186,20 @@ function pintar() {
     `Actualizado a las ${new Date().toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`;
 }
 
-const estadoDe = (familia) => (!familia.respuesta ? 'pendiente' : familia.respuesta.asiste ? 'asiste' : 'no');
+// La confirmación del baby shower está en `confirmacion`; `respuesta` es lo que contestaron para la revelación.
+const estadoDe = (familia) => (!familia.confirmacion ? 'pendiente' : familia.confirmacion.asiste ? 'asiste' : 'no');
 
 function pintarResumen() {
-  const respondieron = familias.filter((f) => f.respuesta);
-  const asisten = respondieron.filter((f) => f.respuesta.asiste);
-  const personas = asisten.reduce((suma, f) => suma + f.respuesta.personas.length, 0);
+  const respondieron = familias.filter((f) => f.confirmacion);
+  const asisten = respondieron.filter((f) => f.confirmacion.asiste);
+  const personas = asisten.reduce((suma, f) => suma + f.confirmacion.personas.length, 0);
   const reservados = familias.reduce((suma, f) => suma + f.cupo, 0);
-  const apuestas = { nina: 0, nino: 0 };
-  for (const familia of respondieron) {
-    for (const persona of familia.respuesta.personas) apuestas[persona.apuesta] += 1;
-  }
 
   document.getElementById('resumen').innerHTML = `
     <div class="dato dato-destacado"><strong>${personas}</strong><span>Personas confirmadas</span><small>de ${reservados} lugares</small></div>
     <div class="dato"><strong>${asisten.length}</strong><span>Familias asisten</span><small>de ${familias.length} invitadas</small></div>
     <div class="dato"><strong>${familias.length - respondieron.length}</strong><span>Pendientes</span><small>sin responder</small></div>
     <div class="dato"><strong>${respondieron.length - asisten.length}</strong><span>No asisten</span><small>familias</small></div>`;
-
-  const bloque = document.getElementById('apuestas');
-  bloque.innerHTML = marcador(apuestas);
-  animarMarcador(bloque);
 
   const cuenta = { todas: familias.length, asiste: asisten.length, no: respondieron.length - asisten.length, pendiente: familias.length - respondieron.length };
   document.querySelectorAll('[data-filtro]').forEach((boton) => {
@@ -232,12 +224,13 @@ function pintarFamilias() {
 
 function vistaFamilia(familia) {
   const estado = estadoDe(familia);
-  const personas = familia.respuesta?.personas ?? [];
+  const confirmacion = familia.confirmacion;
+  const personas = confirmacion?.personas ?? [];
   const meta = estado === 'asiste'
     ? `${personas.length} de ${familia.cupo} ${familia.cupo === 1 ? 'lugar' : 'lugares'}`
     : lugares(familia.cupo);
-  const fecha = familia.respuesta
-    ? ` · respondió el ${new Date(familia.respuesta.actualizada).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}`
+  const fecha = confirmacion
+    ? ` · respondió el ${new Date(confirmacion.actualizada).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}`
     : '';
   const chips = personas.map(chip).join('');
   return `<li class="familia" data-codigo="${familia.codigo}">
@@ -249,13 +242,13 @@ function vistaFamilia(familia) {
       <span class="estado estado-${estado}">${ETIQUETAS[estado]}</span>
     </div>
     ${chips ? `<ul class="chips">${chips}</ul>` : ''}
-    ${familia.respuesta?.mensaje ? `<p class="familia-mensaje">“${esc(familia.respuesta.mensaje)}”</p>` : ''}
+    ${confirmacion?.mensaje ? `<p class="familia-mensaje">“${esc(confirmacion.mensaje)}”</p>` : ''}
     <div class="familia-acciones">
       <a class="boton boton-chico boton-whatsapp" href="${esc(whatsapp(familia))}" target="_blank" rel="noopener">${icono('whatsapp')}<span>Enviar</span></a>
       <button type="button" class="boton boton-chico" data-accion="copiar">${icono('copiar')}<span>Copiar link</span></button>
       <a class="boton-icono" href="${esc(enlace(familia))}" target="_blank" rel="noopener" aria-label="Ver la invitación de ${esc(familia.nombre)}">${icono('ojo')}</a>
       <button type="button" class="boton-icono" data-accion="editar" aria-label="Editar ${esc(familia.nombre)}">${icono('editar')}</button>
-      ${familia.respuesta ? `<button type="button" class="boton-icono" data-accion="reiniciar" aria-label="Borrar la respuesta de ${esc(familia.nombre)}">${icono('reiniciar')}</button>` : ''}
+      ${confirmacion ? `<button type="button" class="boton-icono" data-accion="reiniciar" aria-label="Borrar la confirmación de ${esc(familia.nombre)}">${icono('reiniciar')}</button>` : ''}
       <button type="button" class="boton-icono boton-peligro" data-accion="eliminar" aria-label="Eliminar a ${esc(familia.nombre)}">${icono('basura')}</button>
     </div>
   </li>`;
@@ -275,12 +268,17 @@ function vistaEdicion(familia) {
 }
 
 function pintarMensajes() {
-  const conMensaje = familias.filter((f) => f.respuesta?.mensaje);
-  const contenido = conMensaje.length
-    ? `<div class="mensajes-lista">${conMensaje.map((f) => `
-        <blockquote class="mensaje-item"><p>“${esc(f.respuesta.mensaje)}”</p><cite>${esc(f.nombre)}</cite></blockquote>`).join('')}</div>`
-    : '<p class="vacio">Aquí aparecerán los mensajes que dejen para el bebé.</p>';
-  document.getElementById('mensajes').innerHTML = `<h2 class="bloque-titulo" id="tituloMensajes">Mensajes para el bebé</h2>${contenido}`;
+  const lista = (mensajes) => `<div class="mensajes-lista">${mensajes.map(({ nombre, mensaje }) => `
+    <blockquote class="mensaje-item"><p>“${esc(mensaje)}”</p><cite>${esc(nombre)}</cite></blockquote>`).join('')}</div>`;
+  const nuevos = familias.filter((f) => f.confirmacion?.mensaje).map((f) => ({ nombre: f.nombre, mensaje: f.confirmacion.mensaje }));
+  const antes = familias.filter((f) => f.respuesta?.mensaje).map((f) => ({ nombre: f.nombre, mensaje: f.respuesta.mensaje }));
+  document.getElementById('mensajes').innerHTML = `<h2 class="bloque-titulo" id="tituloMensajes">Mensajes para la bebé</h2>
+    ${nuevos.length ? lista(nuevos) : '<p class="vacio">Aquí aparecerán los mensajes que dejen para la bebé.</p>'}
+    ${antes.length ? `<div class="mensajes-antes">
+      <h3 class="mensajes-antes-titulo">Los que dejaron para la revelación</h3>
+      <p class="mensajes-antes-nota">Llegaron cuando la invitación era para la revelación. Se guardan aquí.</p>
+      ${lista(antes)}
+    </div>` : ''}`;
 }
 
 // ---------- Utilidades ----------
@@ -291,9 +289,9 @@ function enlace(familia) {
 
 function whatsapp(familia) {
   const texto = [
-    `¡Hola, ${familia.nombre}! 🕊️`,
+    `¡Hola, ${familia.nombre}! 🦋`,
     '',
-    `La cigüeña trae una noticia muy especial: ${EVENTO.papas} los invitan a descubrir si su bebé será niña o niño.`,
+    `${EVENTO.papas} los invitan a su baby shower para celebrar la llegada de su hermosa bebé.`,
     '',
     `📅 ${EVENTO.fecha} · ${EVENTO.hora}`,
     `📍 ${EVENTO.lugar}`,

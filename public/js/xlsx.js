@@ -1,43 +1,43 @@
 // Exporta la lista de invitados a Excel (.xlsx) sin librerías: un ZIP sin compresión con el XML mínimo.
 
 const ESTADOS = { asiste: 'Asiste', no: 'No asiste', pendiente: 'Pendiente' };
-const APUESTAS = { nina: 'Niña', nino: 'Niño' };
 
 export function descargarExcel(familias, enlace) {
-  const estado = (familia) => ESTADOS[!familia.respuesta ? 'pendiente' : familia.respuesta.asiste ? 'asiste' : 'no'];
-  const invitados = [['Familia', 'Estado', 'Nombre', 'Apuesta', 'Link']];
-  const resumen = [['Familia', 'Estado', 'Lugares reservados', 'Personas que asisten', 'Apuestas niña', 'Apuestas niño', 'Mensaje para el bebé', 'Respondió', 'Link']];
+  const estado = (familia) => ESTADOS[!familia.confirmacion ? 'pendiente' : familia.confirmacion.asiste ? 'asiste' : 'no'];
+  const invitados = [['Familia', 'Estado', 'Nombre', 'Link']];
+  const resumen = [['Familia', 'Estado', 'Lugares reservados', 'Personas que asisten', 'Mensaje para la bebé', 'Respondió', 'Link']];
+  const antes = [['Familia', 'Mensaje que dejaron para la revelación']];
 
   for (const familia of familias) {
-    const personas = familia.respuesta?.personas ?? [];
+    const confirmacion = familia.confirmacion;
+    const personas = confirmacion?.personas ?? [];
     if (personas.length) {
-      for (const persona of personas) {
-        invitados.push([familia.nombre, estado(familia), persona.nombre, APUESTAS[persona.apuesta], enlace(familia)]);
-      }
+      for (const persona of personas) invitados.push([familia.nombre, estado(familia), persona.nombre, enlace(familia)]);
     } else {
-      invitados.push([familia.nombre, estado(familia), '', '', enlace(familia)]);
+      invitados.push([familia.nombre, estado(familia), '', enlace(familia)]);
     }
     resumen.push([
       familia.nombre,
       estado(familia),
       familia.cupo,
-      familia.respuesta?.asiste ? personas.length : 0,
-      personas.filter((p) => p.apuesta === 'nina').length,
-      personas.filter((p) => p.apuesta === 'nino').length,
-      familia.respuesta?.mensaje ?? '',
-      familia.respuesta ? new Date(familia.respuesta.actualizada).toLocaleString('es-CO') : '',
+      confirmacion?.asiste ? personas.length : 0,
+      confirmacion?.mensaje ?? '',
+      confirmacion ? new Date(confirmacion.actualizada).toLocaleString('es-CO') : '',
       enlace(familia),
     ]);
+    if (familia.respuesta?.mensaje) antes.push([familia.nombre, familia.respuesta.mensaje]);
   }
 
-  const archivo = libro([
-    { nombre: 'Invitados', filas: invitados, anchos: [30, 12, 28, 10, 40] },
-    { nombre: 'Familias', filas: resumen, anchos: [30, 12, 12, 14, 12, 12, 48, 20, 40] },
-  ]);
+  const hojas = [
+    { nombre: 'Invitados', filas: invitados, anchos: [30, 12, 28, 40] },
+    { nombre: 'Familias', filas: resumen, anchos: [30, 12, 12, 14, 48, 20, 40] },
+  ];
+  if (antes.length > 1) hojas.push({ nombre: 'Mensajes revelación', filas: antes, anchos: [30, 60] });
+  const archivo = libro(hojas);
   const url = URL.createObjectURL(archivo);
   const enlaceDescarga = document.createElement('a');
   enlaceDescarga.href = url;
-  enlaceDescarga.download = `invitados-revelacion-${new Date().toISOString().slice(0, 10)}.xlsx`;
+  enlaceDescarga.download = `invitados-baby-shower-${new Date().toISOString().slice(0, 10)}.xlsx`;
   document.body.append(enlaceDescarga);
   enlaceDescarga.click();
   enlaceDescarga.remove();
@@ -54,7 +54,7 @@ const TIPO = 'application/vnd.openxmlformats-officedocument.spreadsheetml';
 
 const ESTILOS = `<styleSheet xmlns="${ESPACIOS.hoja}">
 <fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>
-<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF3EADD"/><bgColor indexed="64"/></patternFill></fill></fills>
+<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF3E8EE"/><bgColor indexed="64"/></patternFill></fill></fills>
 <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
 <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
 <cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs>

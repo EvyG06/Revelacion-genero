@@ -7,46 +7,47 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as esperar } from 'node:timers/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { DEFINICIONES, ciguena, recorte } from '../public/js/ilustraciones.js';
 import { EVENTO } from '../public/js/evento.js';
 
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const salida = fileURLToPath(new URL('../public/og.jpg', import.meta.url));
-const imagen = pathToFileURL(fileURLToPath(new URL('../public/img/osos.webp', import.meta.url))).href;
+const mariposa = (nombre) => pathToFileURL(fileURLToPath(new URL(`../public/img/mariposas/${nombre}.webp`, import.meta.url))).href;
 
 const html = `<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Sacramento&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Great+Vibes&display=block">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
-  body { position: relative; background: #FFFEFC; color: #5E4A3B; font-family: 'Cormorant Garamond', Georgia, serif; font-variant-numeric: lining-nums; }
-  .capa { position: absolute; display: block; mix-blend-mode: multiply; }
-  .capa svg { display: block; width: 100%; height: auto; }
-  .oso-nina { left: 18px; top: -18px; width: 250px; }
-  .oso-nino { right: 18px; top: -10px; width: 250px; }
-  .nubes { left: -40px; right: -40px; bottom: -250px; }
-  .estrella { width: 30px; }
-  .ave { position: absolute; left: 50%; top: 34px; width: 250px; transform: translateX(-50%) rotate(-3deg); }
-  .texto { position: absolute; left: 260px; right: 260px; top: 190px; text-align: center; }
-  h1 { margin: 0; font-family: Sacramento, cursive; font-size: 128px; font-weight: 400; line-height: 1; white-space: nowrap; }
-  .nina { color: #B4666A; } .nino { color: #4C7AA0; }
-  .papas { margin: 14px 0 0; font-size: 30px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-  .fecha { margin: 8px 0 0; font-size: 30px; font-style: italic; font-weight: 500; color: #7F6A59; }
+  body { position: relative; background: #F7F4F5; color: #3E3039; font-variant-numeric: lining-nums; }
+  img { position: absolute; display: block; height: auto; }
+  .polvo { left: -60px; top: -30px; width: 1320px; opacity: .8; }
+  .arriba-izq { left: -40px; top: -46px; width: 230px; }
+  .arriba-der { right: -36px; top: -40px; width: 250px; }
+  .lado-izq { left: -70px; top: 300px; width: 330px; }
+  .lado-der { right: -70px; top: 330px; width: 330px; }
+  .grande { left: 50%; top: 14px; width: 330px; transform: translateX(-50%); }
+  .chica { left: 250px; top: 120px; width: 46px; transform: rotate(-8deg); }
+  .mini { right: 270px; top: 190px; width: 34px; }
+  .texto { position: absolute; left: 230px; right: 230px; top: 262px; text-align: center; }
+  h1 { margin: 0; font-family: 'Great Vibes', cursive; font-size: 124px; font-weight: 400; line-height: 1.05; color: #98809A; white-space: nowrap; }
+  .papas { margin: 0; font-family: 'Great Vibes', cursive; font-size: 66px; line-height: 1.1; color: #C46A92; white-space: nowrap; }
+  .fecha { margin: 14px 0 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; font-style: italic; font-weight: 500; color: #6E5566; }
 </style></head><body>
-  ${DEFINICIONES}
-  <span class="capa oso-nina">${recorte('osoNina')}</span>
-  <span class="capa oso-nino">${recorte('osoNino')}</span>
-  <span class="capa estrella" style="left:300px;top:70px">${recorte('estrella1')}</span>
-  <span class="capa estrella" style="right:310px;top:120px">${recorte('estrella3')}</span>
-  <span class="capa nubes">${recorte('nubes')}</span>
-  <div class="ave">${ciguena({ carga: 'bulto' })}</div>
+  <img class="polvo" src="${mariposa('polvo')}" alt="">
+  <img class="arriba-izq" src="${mariposa('arriba-izq')}" alt="">
+  <img class="arriba-der" src="${mariposa('arriba-der')}" alt="">
+  <img class="lado-izq" src="${mariposa('lado-izq')}" alt="">
+  <img class="lado-der" src="${mariposa('lado-der')}" alt="">
+  <img class="grande" src="${mariposa('grande')}" alt="">
+  <img class="chica" src="${mariposa('chica-lila')}" alt="">
+  <img class="mini" src="${mariposa('chica-rosa')}" alt="">
   <div class="texto">
-    <h1>¿<span class="nina">Niña</span> o <span class="nino">niño</span>?</h1>
-    <p class="papas">${EVENTO.papas}</p>
+    <h1>Baby Shower</h1>
+    <p class="papas">Estefanía &amp; Sebastián</p>
     <p class="fecha">${EVENTO.fecha} · ${EVENTO.hora}</p>
   </div>
-</body></html>`.replaceAll('/img/osos.webp', imagen);
+</body></html>`;
 
 if (process.argv[2]) {
   writeFileSync(process.argv[2], html);
@@ -81,7 +82,7 @@ if (process.argv[2]) {
   } finally {
     if (chrome.exitCode === null) {
       const cerrado = new Promise((resolver) => chrome.once('exit', resolver));
-      chrome.kill();
+      chrome.kill('SIGKILL');
       await Promise.race([cerrado, esperar(3000)]);
     }
     rmSync(temporal, { recursive: true, force: true, maxRetries: 5, retryDelay: 300 });

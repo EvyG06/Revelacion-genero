@@ -1,17 +1,19 @@
-// Confirmación en pasos: asistencia → cuántos → quiénes y su apuesta → mensaje → gracias.
+// Confirmación en pasos: asistencia → cuántos → quiénes → mensaje → gracias.
+// Si no pueden ir, pasan directo a dejarle un mensaje a la bebé.
 import { EVENTO } from './evento.js';
-import { GLOBO, ciguena, icono } from './ilustraciones.js';
-import { animarMarcador, chip, esc, esperar, lugares, marcador } from './comun.js';
-import { soltarGlobos } from './globos.js';
+import { icono, mariposaGrande, mariposita } from './ilustraciones.js';
+import { chip, esc, esperar, lugares } from './comun.js';
+import { soltarMariposas } from './mariposas.js';
 
-const PASOS = ['asistencia', 'cantidad', 'personas', 'mensaje'];
+const PASOS_SI = ['asistencia', 'cantidad', 'personas', 'mensaje'];
+const PASOS_NO = ['asistencia', 'mensaje'];
+const ASIENTOS = ['chica-rosa', 'chica-lila', 'mini-rosa'];
 
 export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
   const cuerpo = raiz.querySelector('[data-rsvp-cuerpo]');
   const cupo = raiz.querySelector('[data-rsvp-cupo]');
   const estado = { paso: 'asistencia', asiste: null, cantidad: 1, personas: [], mensaje: '', enviando: false };
   let familia = null;
-  let apuestas = null;
 
   cuerpo.addEventListener('click', alTocar);
   cuerpo.addEventListener('input', alEscribir);
@@ -24,7 +26,6 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
       return;
     }
     familia = nuevos.familia;
-    apuestas = nuevos.apuestas;
     cupo.textContent = `Tienen ${lugares(familia.cupo)} para ustedes.`;
     cargarRespuesta();
     ir(familia.respuesta ? 'gracias' : 'asistencia', false);
@@ -34,7 +35,7 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
     const respuesta = familia.respuesta;
     estado.asiste = respuesta ? respuesta.asiste : null;
     estado.personas = respuesta ? respuesta.personas.map((persona) => ({ ...persona })) : [];
-    estado.cantidad = respuesta ? respuesta.personas.length : 1;
+    estado.cantidad = Math.max(1, estado.personas.length);
     estado.mensaje = respuesta?.mensaje ?? '';
   }
 
@@ -47,7 +48,6 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
         { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' },
       );
     }
-    if (paso === 'gracias') animarMarcador(cuerpo);
   }
 
   function vista() {
@@ -63,11 +63,12 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
 
   // ---------- Vistas ----------
 
-  // Un globito por paso: los ya hechos se llenan y el actual sube un poco.
+  // Una mariposita por paso: las de los pasos hechos se colorean y la actual crece.
   function indicador() {
-    const actual = PASOS.indexOf(estado.paso);
-    const globos = PASOS.map((_, i) => `<li class="${i < actual ? 'hecho' : i === actual ? 'actual' : ''}">${GLOBO}</li>`).join('');
-    return `<ol class="rsvp-pasos" aria-label="Paso ${actual + 1} de ${PASOS.length}">${globos}</ol>`;
+    const pasos = estado.asiste === false ? PASOS_NO : PASOS_SI;
+    const actual = pasos.indexOf(estado.paso);
+    const items = pasos.map((_, i) => `<li class="${i < actual ? 'hecho' : i === actual ? 'actual' : ''}">${mariposita('chica-rosa')}</li>`).join('');
+    return `<ol class="rsvp-pasos" aria-label="Paso ${actual + 1} de ${pasos.length}">${items}</ol>`;
   }
 
   function navegacion(texto, accion = 'siguiente') {
@@ -85,33 +86,30 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
       <h3 class="paso-titulo">¿Nos acompañan?</h3>
       <div class="opciones">
         <button type="button" class="opcion ${estado.asiste === true ? 'elegida' : ''}" data-accion="asistir" data-valor="si">
-          <span class="opcion-globos"><span class="g-rosa">${GLOBO}</span><span class="g-cielo">${GLOBO}</span></span>
+          ${mariposita('chica-rosa')}
           <span class="opcion-texto"><strong>¡Sí, allí estaremos!</strong><small>Cuéntennos quiénes van</small></span>
         </button>
         <button type="button" class="opcion ${estado.asiste === false ? 'elegida' : ''}" data-accion="asistir" data-valor="no">
-          <span class="opcion-globos"><span class="g-arena">${GLOBO}</span></span>
-          <span class="opcion-texto"><strong>No podremos ir</strong><small>Igual pueden dejar su apuesta</small></span>
+          ${mariposita('chica-lila')}
+          <span class="opcion-texto"><strong>No podremos ir</strong><small>Igual pueden dejarle un mensaje a la bebé</small></span>
         </button>
       </div>
     </div>`;
   }
 
   function vistaCantidad() {
-    const minimo = estado.asiste ? 1 : 0;
-    const globos = Array.from({ length: familia.cupo }, (_, i) => `
-      <button type="button" class="asiento ${i < estado.cantidad ? 'ocupado' : ''}" data-accion="elegir" data-valor="${i + 1}" aria-label="${i + 1} ${i === 0 ? 'persona' : 'personas'}">${GLOBO}</button>`).join('');
+    const asientos = Array.from({ length: familia.cupo }, (_, i) => `
+      <button type="button" class="asiento ${i < estado.cantidad ? 'ocupado' : ''}" data-accion="elegir" data-valor="${i + 1}" aria-label="${i + 1} ${i === 0 ? 'persona' : 'personas'}">${mariposita(ASIENTOS[i % ASIENTOS.length])}</button>`).join('');
     return `<div class="paso">
       ${indicador()}
-      <h3 class="paso-titulo">${estado.asiste ? '¿Cuántos vienen?' : '¡Los vamos a extrañar!'}</h3>
-      <p class="paso-texto">${estado.asiste
-        ? 'Toquen un globo por cada persona o usen los botones.'
-        : 'Aunque no vengan, pueden dejar su apuesta. ¿Cuántos quieren apostar?'}</p>
+      <h3 class="paso-titulo">¿Cuántos vienen?</h3>
+      <p class="paso-texto">Toquen una mariposa por cada persona o usen los botones.</p>
       <div class="contador">
-        <button type="button" class="contador-boton" data-accion="menos" aria-label="Uno menos" ${estado.cantidad <= minimo ? 'disabled' : ''}>${icono('menos')}</button>
+        <button type="button" class="contador-boton" data-accion="menos" aria-label="Uno menos" ${estado.cantidad <= 1 ? 'disabled' : ''}>${icono('menos')}</button>
         <output class="contador-numero" aria-live="polite">${estado.cantidad}</output>
         <button type="button" class="contador-boton" data-accion="mas" aria-label="Uno más" ${estado.cantidad >= familia.cupo ? 'disabled' : ''}>${icono('mas')}</button>
       </div>
-      <div class="asientos">${globos}</div>
+      <div class="asientos">${asientos}</div>
       ${navegacion('Siguiente')}
     </div>`;
   }
@@ -125,34 +123,28 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
             placeholder="${i === 0 ? 'Nombre (ej. Ana Gómez)' : 'Nombre'}" autocomplete="off" autocapitalize="words"
             enterkeyhint="${i === estado.personas.length - 1 ? 'done' : 'next'}" aria-label="Nombre de la persona ${i + 1}">
         </label>
-        <div class="apuesta" role="radiogroup" aria-label="¿Qué cree la persona ${i + 1} que será?">
-          ${botonApuesta('nina', persona.apuesta)}
-          ${botonApuesta('nino', persona.apuesta)}
-        </div>
       </li>`).join('');
     return `<div class="paso">
       ${indicador()}
-      <h3 class="paso-titulo">${estado.asiste ? '¿Quiénes vienen?' : '¿Quiénes apuestan?'}</h3>
-      <p class="paso-texto">Escriban el nombre de cada uno y elijan su globo: ¿niña o niño?</p>
+      <h3 class="paso-titulo">¿Quiénes vienen?</h3>
+      <p class="paso-texto">Escriban el nombre de cada uno.</p>
       <ol class="personas">${filas}</ol>
       <p class="paso-error" role="alert"></p>
       ${navegacion('Siguiente')}
     </div>`;
   }
 
-  function botonApuesta(valor, actual) {
-    return `<button type="button" role="radio" class="apuesta-boton apuesta-${valor}" aria-checked="${actual === valor}" data-accion="apostar" data-valor="${valor}">
-      ${GLOBO}<span>${valor === 'nina' ? 'Niña' : 'Niño'}</span>
-    </button>`;
-  }
-
   function vistaMensaje() {
+    const titulo = estado.asiste ? 'Un mensaje para la bebé' : '¡Los vamos a extrañar!';
+    const texto = estado.asiste
+      ? `Es opcional: unas palabras bonitas que ${EVENTO.papas} podrán guardar para siempre.`
+      : `Si quieren, déjenle un mensaje a la bebé. ${EVENTO.papas} lo podrán guardar para siempre.`;
     return `<div class="paso">
       ${indicador()}
-      <h3 class="paso-titulo">Un mensaje para el bebé</h3>
-      <p class="paso-texto">Es opcional: unas palabras bonitas que ${EVENTO.papas} podrán guardar para siempre.</p>
+      <h3 class="paso-titulo">${titulo}</h3>
+      <p class="paso-texto">${texto}</p>
       <label class="mensaje">
-        <span class="sr">Mensaje para el bebé</span>
+        <span class="sr">Mensaje para la bebé</span>
         <textarea name="mensaje" rows="4" maxlength="500" placeholder="Escriban aquí sus buenos deseos…">${esc(estado.mensaje)}</textarea>
         <span class="mensaje-contador" data-contador>${estado.mensaje.length}/500</span>
       </label>
@@ -163,8 +155,8 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
 
   function vistaEnviando() {
     return `<div class="paso enviando" aria-live="polite">
-      <div class="enviando-ave">${ciguena({ carga: 'sobre' })}</div>
-      <p class="paso-texto">La cigüeña está llevando su respuesta…</p>
+      <span class="mariposa mariposa-suelta volando" aria-hidden="true">${mariposaGrande()}</span>
+      <p class="paso-texto">Una mariposa está llevando su respuesta…</p>
     </div>`;
   }
 
@@ -177,7 +169,6 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
         : 'Los vamos a extrañar mucho. ¡Gracias por acompañarnos desde lejos!'}</p>
       ${personas.length ? `<ul class="chips">${personas.map(chip).join('')}</ul>` : ''}
       ${mensaje ? `<blockquote class="cita">“${esc(mensaje)}”</blockquote>` : ''}
-      ${marcador(apuestas)}
       <button type="button" class="boton boton-suave" data-accion="cambiar">${icono('editar')}<span>Cambiar respuesta</span></button>
     </div>`;
   }
@@ -199,13 +190,11 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
     const { accion, valor } = boton.dataset;
     if (accion === 'asistir') {
       estado.asiste = valor === 'si';
-      if (estado.asiste && estado.cantidad < 1) estado.cantidad = 1;
       boton.classList.add('elegida');
-      setTimeout(() => ir('cantidad'), 220);
+      setTimeout(() => ir(estado.asiste ? 'cantidad' : 'mensaje'), 220);
     } else if (accion === 'menos') cambiarCantidad(estado.cantidad - 1);
     else if (accion === 'mas') cambiarCantidad(estado.cantidad + 1);
     else if (accion === 'elegir') cambiarCantidad(Number(valor));
-    else if (accion === 'apostar') apostar(boton, valor);
     else if (accion === 'atras') ir(pasoAnterior());
     else if (accion === 'siguiente') siguiente();
     else if (accion === 'enviar') enviar();
@@ -240,8 +229,7 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
   }
 
   function cambiarCantidad(cantidad) {
-    const minimo = estado.asiste ? 1 : 0;
-    estado.cantidad = Math.max(minimo, Math.min(familia.cupo, cantidad));
+    estado.cantidad = Math.max(1, Math.min(familia.cupo, cantidad));
     ir('cantidad', false);
     cuerpo.querySelector('.contador-numero').animate(
       [{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }],
@@ -249,31 +237,17 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
     );
   }
 
-  function apostar(boton, valor) {
-    const fila = boton.closest('.persona');
-    estado.personas[Number(fila.dataset.indice)].apuesta = valor;
-    fila.querySelectorAll('.apuesta-boton').forEach((opcion) => {
-      opcion.setAttribute('aria-checked', String(opcion.dataset.valor === valor));
-    });
-    fila.classList.remove('con-error');
-    // El globo elegido da un saltito hacia arriba, como si se inflara.
-    boton.querySelector('.globo').animate(
-      [{ transform: 'translateY(0) scale(.9)' }, { transform: 'translateY(-7px) scale(1.12)' }, { transform: 'translateY(0) scale(1)' }],
-      { duration: 520, easing: 'cubic-bezier(.3,1.6,.5,1)' },
-    );
-  }
-
   function pasoAnterior() {
-    if (estado.paso === 'mensaje') return estado.cantidad ? 'personas' : 'cantidad';
+    if (estado.paso === 'mensaje') return estado.asiste ? 'personas' : 'asistencia';
     if (estado.paso === 'personas') return 'cantidad';
     return 'asistencia';
   }
 
   function siguiente() {
     if (estado.paso === 'cantidad') {
-      while (estado.personas.length < estado.cantidad) estado.personas.push({ nombre: '', apuesta: null });
+      while (estado.personas.length < estado.cantidad) estado.personas.push({ nombre: '' });
       estado.personas.length = estado.cantidad;
-      ir(estado.cantidad ? 'personas' : 'mensaje');
+      ir('personas');
     } else if (estado.paso === 'personas' && personasCompletas()) {
       ir('mensaje');
     }
@@ -282,20 +256,19 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
   function personasCompletas() {
     const filas = cuerpo.querySelectorAll('.persona');
     for (const [i, persona] of estado.personas.entries()) {
-      if (!persona.nombre.trim()) return marcarError(filas[i], `Falta el nombre de la persona ${i + 1}.`, true);
-      if (!persona.apuesta) return marcarError(filas[i], `¿Qué cree ${persona.nombre.trim()} que será: niña o niño?`);
+      if (!persona.nombre.trim()) return marcarError(filas[i], `Falta el nombre de la persona ${i + 1}.`);
     }
     return true;
   }
 
-  function marcarError(fila, mensaje, enfocar = false) {
+  function marcarError(fila, mensaje) {
     mostrarError(mensaje);
     fila.classList.add('con-error');
     fila.animate(
       [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
       { duration: 320 },
     );
-    if (enfocar) fila.querySelector('input').focus();
+    fila.querySelector('input').focus();
     return false;
   }
 
@@ -309,7 +282,7 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
     estado.enviando = true;
     const respuesta = {
       asiste: estado.asiste,
-      personas: estado.personas.map(({ nombre, apuesta }) => ({ nombre: nombre.trim(), apuesta })),
+      personas: estado.asiste ? estado.personas.map(({ nombre }) => ({ nombre: nombre.trim() })) : [],
       mensaje: estado.mensaje.trim(),
     };
     ir('enviando');
@@ -324,11 +297,10 @@ export function montarRsvp(raiz, { codigo, datos, recargar, alResponder }) {
       if (!peticion.ok) throw new Error(resultado.error || 'No pudimos guardar su respuesta. Inténtenlo de nuevo.');
       await esperar(Math.max(0, 1500 - (performance.now() - inicio)));
       familia = resultado.familia;
-      apuestas = resultado.apuestas;
       cargarRespuesta();
       ir('gracias');
       raiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      soltarGlobos();
+      soltarMariposas();
       alResponder?.(familia);
     } catch (error) {
       ir('mensaje');

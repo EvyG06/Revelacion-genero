@@ -88,13 +88,3 @@ export function esAdmin(peticion) {
   const b = createHash('sha256').update(clave).digest();
   return timingSafeEqual(a, b);
 }
-
-export function contarApuestas(familias) {
-  const conteo = { nina: 0, nino: 0 };
-  for (const familia of familias) {
-    for (const persona of familia.respuesta?.personas ?? []) {
-      if (Object.hasOwn(conteo, persona.apuesta)) conteo[persona.apuesta] += 1;
-    }
-  }
-  return conteo;
-}

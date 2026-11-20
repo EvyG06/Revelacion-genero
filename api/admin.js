@@ -20,12 +20,13 @@ export const POST = manejar(async (peticion) => {
 
   let codigo = nuevoCodigo();
   while (await obtenerFamilia(codigo)) codigo = nuevoCodigo();
-  const familia = { codigo, nombre, cupo, creada: new Date().toISOString(), respuesta: null };
+  const familia = { codigo, nombre, cupo, creada: new Date().toISOString(), confirmacion: null };
   await guardarFamilia(familia);
   return json({ familia }, 201);
 });
 
-// Cambia el nombre o los lugares, o borra la respuesta para que la familia vuelva a responder.
+// Cambia el nombre o los lugares, o borra la confirmación para que la familia vuelva a responder.
+// Lo que respondieron para la revelación (`respuesta`) no se toca.
 export const PATCH = manejar(async (peticion) => {
   if (!esAdmin(peticion)) return noAutorizado();
   const cuerpo = (await leerJson(peticion)) ?? {};
@@ -42,7 +43,7 @@ export const PATCH = manejar(async (peticion) => {
     if (!cupo) return error('Los lugares deben ser un número entre 1 y 30.');
     familia.cupo = cupo;
   }
-  if (cuerpo.borrarRespuesta === true) familia.respuesta = null;
+  if (cuerpo.borrarRespuesta === true) familia.confirmacion = null;
 
   await guardarFamilia(familia);
   return json({ familia });

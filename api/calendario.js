@@ -5,22 +5,22 @@ export function GET() {
   const lineas = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Revelacion del bebe//ES',
+    'PRODID:-//Baby shower//ES',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:revelacion-${fecha(EVENTO.inicio)}@invitacion`,
+    `UID:babyshower-${fecha(EVENTO.inicio)}@invitacion`,
     `DTSTAMP:${fecha(new Date().toISOString())}`,
     `DTSTART:${fecha(EVENTO.inicio)}`,
     `DTEND:${fecha(EVENTO.fin)}`,
     `SUMMARY:${escapar(EVENTO.titulo)}`,
     `LOCATION:${escapar(EVENTO.lugar)}`,
-    `DESCRIPTION:${escapar(`¿Niña o niño? Acompáñennos a descubrirlo.\nCómo llegar: ${EVENTO.mapa}`)}`,
+    `DESCRIPTION:${escapar(`Acompáñennos a celebrar la llegada de nuestra bebé.\nCómo llegar: ${EVENTO.mapa}`)}`,
     `URL:${EVENTO.mapa}`,
     'BEGIN:VALARM',
     'TRIGGER:-PT3H',
     'ACTION:DISPLAY',
-    'DESCRIPTION:Hoy es la revelación del bebé',
+    'DESCRIPTION:Hoy es el baby shower',
     'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR',
@@ -28,7 +28,7 @@ export function GET() {
   return new Response(`${lineas.map(plegar).join('\r\n')}\r\n`, {
     headers: {
       'content-type': 'text/calendar; charset=utf-8',
-      'content-disposition': 'inline; filename="revelacion-bebe.ics"',
+      'content-disposition': 'inline; filename="baby-shower.ics"',
     },
   });
 }
