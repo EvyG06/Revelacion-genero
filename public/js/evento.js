@@ -1,5 +1,7 @@
 // Datos del evento: todo lo que muestra la invitación sale de aquí.
 export const EVENTO = {
+  // Dirección pública de la invitación: con ella el panel arma los links de cada familia.
+  sitio: 'https://babyshower-estefaysebas.vercel.app',
   titulo: 'Baby shower de Estefanía y Sebastián',
   papas: 'Estefanía y Sebastián',
   inicio: '2026-12-06T15:00:00-05:00',

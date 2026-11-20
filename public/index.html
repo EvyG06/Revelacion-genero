@@ -10,7 +10,7 @@
   <meta property="og:locale" content="es_CO">
   <meta property="og:title" content="Baby Shower · Estefanía y Sebastián">
   <meta property="og:description" content="Acompáñennos a celebrar la llegada de nuestra hermosa bebé · Domingo 6 de diciembre, 3:00 p. m.">
-  <meta property="og:image" content="https://revelaciongeneroi.vercel.app/og.jpg?v=babyshower">
+  <meta property="og:image" content="https://babyshower-estefaysebas.vercel.app/og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Mariposas en acuarela rosadas y lilas alrededor de las palabras Baby Shower">
@@ -104,8 +104,8 @@
         <img class="corona-m m-arriba-der" src="/img/mariposas/arriba-der.webp" alt="">
         <img class="corona-m m-lado-izq" src="/img/mariposas/lado-izq.webp" alt="">
         <img class="corona-m m-lado-der" src="/img/mariposas/lado-der.webp" alt="">
-        <span class="mariposa mariposa-heroe posada" data-mariposa></span>
       </div>
+      <span class="mariposa mariposa-heroe posada" data-mariposa aria-hidden="true"></span>
       <div class="revoloteos" aria-hidden="true">
         <img class="revoloteo r1" src="/img/mariposas/chica-lila.webp" alt="">
         <img class="revoloteo r2" src="/img/mariposas/chica-rosa.webp" alt="">
@@ -116,29 +116,33 @@
       <p class="saludo" id="saludo">¡Hola!</p>
       <p class="intro">Acompáñennos a celebrar la llegada de nuestra hermosa bebé</p>
       <h1 class="titulo"><span class="t1">Baby Shower</span><span class="t2">Estefanía &amp; Sebastián</span></h1>
-      <div class="fecha-bloque">
-        <span class="fecha-mes" data-fecha="mes"></span>
-        <div class="fecha-fila">
-          <span class="fecha-lado" data-fecha="semana"></span>
-          <span class="fecha-dia" data-fecha="dia"></span>
-          <span class="fecha-lado" data-evento="hora"></span>
+      <div class="detalles-portada">
+        <div class="fecha-bloque">
+          <span class="fecha-mes" data-fecha="mes"></span>
+          <div class="fecha-fila">
+            <span class="fecha-lado" data-fecha="semana"></span>
+            <span class="fecha-dia" data-fecha="dia"></span>
+            <span class="fecha-lado" data-evento="hora"></span>
+          </div>
+          <span class="fecha-anio" data-fecha="anio"></span>
         </div>
-        <span class="fecha-anio" data-fecha="anio"></span>
+        <div class="donde">
+          <div class="pildoras">
+            <a class="pildora" data-enlace="mapa" target="_blank" rel="noopener">
+              <span class="insignia" data-icono="ubicacion"></span>
+              <span data-evento="lugar"></span>
+            </a>
+            <a class="pildora" href="#rsvp" id="irConfirmar">
+              <span class="insignia" data-icono="sobre"></span>
+              <span>Confirmar aquí</span>
+            </a>
+          </div>
+          <p class="extras">
+            <a data-enlace="waze" target="_blank" rel="noopener">Abrir en Waze</a> ·
+            <a data-enlace="calendario" target="_blank" rel="noopener">Agendar</a>
+          </p>
+        </div>
       </div>
-      <div class="pildoras">
-        <a class="pildora" data-enlace="mapa" target="_blank" rel="noopener">
-          <span class="insignia" data-icono="ubicacion"></span>
-          <span data-evento="lugar"></span>
-        </a>
-        <a class="pildora" href="#rsvp" id="irConfirmar">
-          <span class="insignia" data-icono="sobre"></span>
-          <span>Confirmar aquí</span>
-        </a>
-      </div>
-      <p class="extras">
-        <a data-enlace="waze" target="_blank" rel="noopener">Abrir en Waze</a> ·
-        <a data-enlace="calendario" target="_blank" rel="noopener">Agendar</a>
-      </p>
       <p class="esperamos">¡Los esperamos!</p>
     </header>
 
@@ -183,8 +187,8 @@
         <img class="corona-m m-arriba-der" src="/img/mariposas/arriba-der.webp" alt="">
         <img class="corona-m m-lado-izq" src="/img/mariposas/lado-izq.webp" alt="">
         <img class="corona-m m-lado-der" src="/img/mariposas/lado-der.webp" alt="">
-        <span class="mariposa mariposa-heroe posada" data-mariposa></span>
       </div>
+      <span class="mariposa mariposa-heroe posada" data-mariposa aria-hidden="true"></span>
       <h1 class="seccion-titulo">Esta invitación es personal</h1>
       <p class="sin-invitacion-texto">Parece que el link no está completo. Pídele a Estefanía o a Sebastián el link de tu familia.</p>
     </div>

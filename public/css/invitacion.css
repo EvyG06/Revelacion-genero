@@ -211,7 +211,7 @@ body.bloqueado { overflow: hidden; }
 }
 /* La mariposa principal flota y aletea. */
 .mariposa-heroe {
-  left: calc(77 * var(--u));
+  left: calc(50% - 118 * var(--u));
   top: calc(12 * var(--u));
   width: calc(236 * var(--u));
   animation: planear 6s ease-in-out infinite;
@@ -512,28 +512,82 @@ body.bloqueado { overflow: hidden; }
 .sin-invitacion-texto { position: relative; max-width: 32ch; margin: 0 auto; color: var(--tinta-suave); }
 
 /* ---------- Tablet y computador ----------
-   La portada crece con --u hasta un tope; el resto se centra en una columna cómoda
-   y aparecen maripositas en los costados. */
+   La portada ocupa la primera pantalla: las mariposas grandes se van a las esquinas,
+   la principal aletea arriba al centro y la fecha y el lugar quedan en dos columnas.
+   El resto se centra en una columna cómoda y aparecen maripositas en los costados. */
 @media (min-width: 760px) {
   .escenario { gap: 18px; }
-  .apertura-intro { max-width: 640px; font-size: clamp(2.8rem, 3.6vw, 3.6rem); }
-  .sobre { width: min(38vw, 440px, 46vh); }
+  .apertura-intro { max-width: 680px; font-size: clamp(2.8rem, 3.6vw, 3.8rem); }
+  .sobre { width: min(36vw, 480px, 50vh); }
   .sobre-para { font-size: 1.6rem; }
   .sobre-pista { font-size: 1rem; }
-  .mini-titulo { font-size: clamp(2.6rem, 4vw, 3.6rem); }
+  .mini-titulo { font-size: clamp(2.6rem, 4vw, 3.8rem); }
   .mini-nombres { font-size: 1.2rem; }
-  .decorado .ra { left: 14vw; top: 30vh; }
-  .decorado .rb { right: 15vw; top: 42vh; }
+  .decorado .m-arriba-izq { --ancho: clamp(180px, 17vw, 300px); }
+  .decorado .m-arriba-der { --ancho: clamp(190px, 18vw, 320px); }
+  .decorado .m-abajo-izq, .decorado .m-abajo-der { --ancho: clamp(220px, 21vw, 360px); }
+  .decorado .ra { left: 16vw; top: 30vh; }
+  .decorado .rb { right: 17vw; top: 44vh; }
+
+  .portada {
+    --heroe: min(max(19vw, 220px), 350px, 32vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 3vh 24px 5vh;
+  }
+  .corona, .revoloteos { left: 0; width: 100%; height: 100%; transform: none; }
+  .corona .polvo { left: 50%; top: -2vh; width: min(100vw, 1100px); opacity: .75; transform: translateX(-50%); }
+  .corona .m-arriba-izq { left: -1.5vw; top: -4vh; width: clamp(170px, 16vw, 290px); }
+  .corona .m-arriba-der { right: -1.5vw; top: -4vh; width: clamp(180px, 17vw, 300px); }
+  .corona .m-lado-izq { left: -3vw; top: auto; bottom: 8vh; width: clamp(220px, 20vw, 360px); }
+  .corona .m-lado-der { right: -3vw; top: auto; bottom: 16vh; width: clamp(220px, 20vw, 360px); }
+  .portada .mariposa-heroe { position: relative; left: auto; top: auto; flex: none; width: var(--heroe); margin: 0 auto 12px; }
+  .r1 { left: 17%; top: 30%; width: 46px; }
+  .r2 { right: 18%; top: 36%; width: 38px; }
+  .r3 { left: 24%; top: 92%; width: 30px; }
+  .r4 { right: 22%; top: 84%; width: 50px; }
+  .r5 { display: none; }
+
+  .saludo { font-size: clamp(1.3rem, 1.6vw, 1.85rem); }
+  .intro { max-width: 32ch; margin-top: 8px; font-size: clamp(1.2rem, 1.45vw, 1.75rem); text-wrap: balance; }
+  .titulo { margin-top: 14px; }
+  .t1 { font-size: clamp(4.2rem, 6.2vw, 7.4rem); }
+  .t2 { margin-top: 0; font-size: clamp(2.4rem, 3.4vw, 4.1rem); }
+
+  /* Fecha a la izquierda y lugar a la derecha, separados por una línea fina. */
+  .detalles-portada {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    width: min(100%, 860px);
+    margin-top: clamp(20px, 3.5vh, 40px);
+  }
+  .fecha-bloque { justify-self: end; gap: 6px; margin: 0; padding-right: 44px; }
+  .fecha-mes, .fecha-anio, .fecha-lado { font-size: clamp(.95rem, 1.1vw, 1.3rem); }
+  .fecha-fila { gap: 16px; width: clamp(300px, 24vw, 450px); }
+  .fecha-lado { padding: 10px 0; }
+  .fecha-dia { font-size: clamp(4.4rem, 5.6vw, 6.8rem); }
+  .donde { justify-self: start; padding: 10px 0 10px 44px; border-left: 1px solid var(--arena); }
+  .pildoras { justify-items: start; gap: 12px; margin: 0; }
+  .pildora { width: clamp(290px, 19vw, 360px); min-height: clamp(54px, 3.4vw, 64px); font-size: clamp(1rem, 1.05vw, 1.2rem); }
+  .insignia { width: clamp(44px, 2.8vw, 52px); height: clamp(44px, 2.8vw, 52px); }
+  .extras { margin: 12px 0 0; padding-left: 8px; text-align: left; font-size: clamp(.95rem, 1vw, 1.1rem); }
+  .esperamos { margin-top: clamp(16px, 3vh, 40px); font-size: clamp(2.4rem, 3vw, 3.5rem); }
 
   .lados { position: absolute; inset: 0; display: block; pointer-events: none; }
   .lado-m { position: absolute; display: block; height: auto; animation: flotar 6s ease-in-out infinite; }
-  .l1 { left: 8%; top: 30%; width: 44px; }
-  .l2 { right: 8%; top: 44%; width: 62px; animation-delay: -2s; }
-  .l3 { left: 11%; top: 63%; width: 30px; animation-delay: -1s; }
-  .l4 { right: 11%; top: 80%; width: 46px; animation-delay: -3s; }
+  .l1 { left: 8%; top: 46%; width: 44px; }
+  .l2 { right: 8%; top: 56%; width: 62px; animation-delay: -2s; }
+  .l3 { left: 11%; top: 72%; width: 30px; animation-delay: -1s; }
+  .l4 { right: 11%; top: 86%; width: 46px; animation-delay: -3s; }
 
   .seccion { padding: 56px 40px; }
-  .cuenta { padding-bottom: 10px; }
+  .cuenta { padding-top: 64px; padding-bottom: 10px; }
   .cuenta-titulo { font-size: 2.8rem; }
   .cuenta-unidades div { min-width: 120px; padding: 0 18px; }
   .cuenta-unidades strong { font-size: 3.3rem; }
@@ -541,14 +595,24 @@ body.bloqueado { overflow: hidden; }
   .regalo-titulo { font-size: 1.85rem; }
   .regalo-texto { font-size: 1.05rem; }
 
-  .rsvp { max-width: 640px; margin: 44px auto 0; padding: 44px 48px 40px; }
+  .rsvp { max-width: 720px; margin: 44px auto 0; padding: 46px 56px 42px; }
   .opciones { grid-template-columns: 1fr 1fr; }
   .personas { grid-template-columns: 1fr 1fr; column-gap: 28px; }
-  .navegacion { max-width: 460px; margin-right: auto; margin-left: auto; }
+  .navegacion { max-width: 480px; margin-right: auto; margin-left: auto; }
 
   .despedida { padding: 84px 20px 40px; }
   .despedida-texto { font-size: 1.5rem; }
   .pie-firma { font-size: 4.4rem; }
-  .pie-izq { left: calc(50% - 280px); top: 40px; width: 72px; }
-  .pie-der { right: calc(50% - 280px); top: 30px; width: 64px; }
+  .pie-izq { left: calc(50% - 300px); top: 40px; width: 76px; }
+  .pie-der { right: calc(50% - 300px); top: 30px; width: 66px; }
+
+  .portada-sola { min-height: 100vh; min-height: 100svh; justify-content: center; }
+  .portada-sola .seccion-titulo { margin-top: 0; font-size: clamp(3rem, 4.4vw, 4rem); }
+  .sin-invitacion-texto { font-size: 1.15rem; }
+}
+
+/* Tablet vertical: las mariposas de los lados bajan para no tapar los botones. */
+@media (min-width: 760px) and (orientation: portrait) {
+  .corona .m-lado-izq { bottom: 2vh; }
+  .corona .m-lado-der { bottom: 4vh; }
 }

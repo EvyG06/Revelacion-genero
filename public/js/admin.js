@@ -283,8 +283,11 @@ function pintarMensajes() {
 
 // ---------- Utilidades ----------
 
+// En Vercel los links salen siempre con la dirección nueva, aunque el panel se abra desde la anterior.
+// En este computador apuntan al servidor local para poder probarlos.
 function enlace(familia) {
-  return `${location.origin}/i/${familia.codigo}`;
+  const base = location.hostname.endsWith('.vercel.app') ? EVENTO.sitio : location.origin;
+  return `${base}/i/${familia.codigo}`;
 }
 
 function whatsapp(familia) {
